@@ -52,7 +52,8 @@ let botonGuardar = document.querySelector(".btn-guardar");
 //evento para el boton guardar
 botonGuardar.addEventListener("click", function() {
     //alert(nombrePro.value);
-    obtenerDatos();
+    let datos = obtenerDatos();
+    guardarDatos(datos)
 });
 
 //funcion para tomar los datos del formulario
@@ -67,6 +68,24 @@ function obtenerDatos() {
     limpiarForm()
     return producto;
 }
+
+//funcion para guardar los datos en localStorage
+function guardarDatos(datos){
+    let pedidos = []
+
+    let pedidosPrevios = JSON.parse(localStorage.getItem("Pedidos"))
+
+    if(pedidosPrevios != null){
+        pedidos = pedidosPrevios
+    }
+    
+    pedidos.push(datos)
+    
+    localStorage.setItem("Pedidos", JSON.stringify(pedidos))
+    
+    alert("Datos guardados con exito")
+}
+
 
 // funcion para limpiar el formulario
 
