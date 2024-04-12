@@ -5,6 +5,7 @@ let presentacionPro = document.querySelector(".presentacion-producto");
 let imagenPro = document.querySelector(".imagen-producto");
 let botonGuardar = document.querySelector(".btn-guardar");
 let tabla = document.querySelector(".table tbody");
+let inputBuscar = document.querySelector(".buscar")
 
 //evento para el boton guardar
 botonGuardar.addEventListener("click", function () {
@@ -15,6 +16,8 @@ botonGuardar.addEventListener("click", function () {
   borrarTabla();
   mostrarDatos();
 });
+
+inputBuscar.addEventListener("input", buscarPedido)
 
 //funcion para tomar los datos del formulario
 function obtenerDatos() {
@@ -35,7 +38,6 @@ function obtenerDatos() {
       presentacion: presentacionPro.value,
       imagen: imagenPro.value,
     };
-    console.log(producto);
     limpiarForm();
     return producto;
   }
@@ -55,6 +57,7 @@ function guardarDatos(datos) {
 
   localStorage.setItem("Pedidos", JSON.stringify(pedidos));
   alert("Datos guardados con exito");
+  console.log(pedidos);
 }
 
 // funcion para extraer los datos guardados en el localStorage
@@ -143,6 +146,43 @@ function actualizarPedido(pos) {
     botonGuardar.classList.toggle("d-none")
     borrarTabla();
     mostrarDatos();
+  });
+}
+
+//buscar pedido
+function buscarPedido(){
+  let pedidos = [];
+
+  let pedidosPrevios = JSON.parse(localStorage.getItem("Pedidos"));
+
+  if (pedidosPrevios != null) {
+    pedidos = pedidosPrevios;
+  }
+
+  let nombreBuscado = inputBuscar.value.toLowerCase();
+
+  let pedidosFiltrados = pedidos.filter((pedido) =>{
+    return pedido.nombre.toLowerCase().includes(nombreBuscado)
+  })
+
+  borrarTabla()
+  mostrarPedidos(pedidosFiltrados)
+
+}
+
+function mostrarPedidos(pedidos) {
+  pedidos.forEach(function(pedido, index) {
+    let fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${pedido.nombre}</td>
+      <td>${pedido.precio}</td>
+      <td>${pedido.presentacion}</td>
+      <td><img src="${pedido.imagen}" width="50%"></td>
+      <td><span onclick="actualizarPedido(${index})" class="btn">🖊️</span></td>
+      <td><span onclick="eliminarPedido(${index})" class="btn">❌</span></td>
+    `;
+    tabla.appendChild(fila);
   });
 }
 
